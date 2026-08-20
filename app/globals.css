@@ -1,0 +1,256 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-panel: var(--panel);
+  --color-panel-foreground: var(--panel-foreground);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-alert: var(--alert);
+  --color-alert-foreground: var(--alert-foreground);
+  --font-mono: var(--font-mono), ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+:root {
+  color-scheme: dark;
+  --background: oklch(0.1 0.018 25);
+  --foreground: oklch(0.92 0.03 55);
+  --panel: oklch(0.15 0.028 25 / 88%);
+  --panel-foreground: oklch(0.92 0.03 55);
+  --border: oklch(0.5 0.16 25 / 28%);
+  --muted: oklch(0.19 0.03 25);
+  --muted-foreground: oklch(0.58 0.07 30);
+  --accent: oklch(0.56 0.2 25);
+  --accent-foreground: oklch(0.97 0.02 55);
+  --alert: oklch(0.68 0.23 35);
+  --alert-foreground: oklch(0.13 0.02 25);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-accent/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    background-image: repeating-linear-gradient(
+        0deg,
+        color-mix(in oklch, var(--accent) 5%, transparent) 0px,
+        transparent 1px,
+        transparent 64px,
+        color-mix(in oklch, var(--accent) 5%, transparent) 65px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        color-mix(in oklch, var(--accent) 5%, transparent) 0px,
+        transparent 1px,
+        transparent 64px,
+        color-mix(in oklch, var(--accent) 5%, transparent) 65px
+      );
+  }
+}
+
+@layer components {
+  .mnemo-panel {
+    @apply bg-panel border border-border rounded-none relative;
+    box-shadow: 0 0 0 1px color-mix(in oklch, var(--accent) 8%, transparent) inset;
+  }
+  .mnemo-label {
+    @apply text-muted-foreground text-[0.65rem] tracking-[0.2em] uppercase;
+  }
+  .mnemo-header {
+    @apply flex items-center justify-between border border-border bg-muted/70 px-2.5 py-1.5 text-[0.65rem] tracking-[0.2em] uppercase text-foreground;
+  }
+  .mnemo-range {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+  }
+  .mnemo-range::-webkit-slider-runnable-track {
+    height: 2px;
+    background: color-mix(in oklch, var(--accent) 35%, transparent);
+  }
+  .mnemo-range::-moz-range-track {
+    height: 2px;
+    background: color-mix(in oklch, var(--accent) 35%, transparent);
+  }
+  .mnemo-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    margin-top: -5px;
+    height: 12px;
+    width: 4px;
+    background: var(--accent);
+    box-shadow: 0 0 8px color-mix(in oklch, var(--accent) 80%, transparent);
+  }
+  .mnemo-range::-moz-range-thumb {
+    height: 12px;
+    width: 4px;
+    border: none;
+    background: var(--accent);
+    box-shadow: 0 0 8px color-mix(in oklch, var(--accent) 80%, transparent);
+  }
+  .mnemo-panel-in {
+    animation: mnemo-panel-in 0.4s ease-out both;
+  }
+  .mnemo-calibrating {
+    background-image: repeating-linear-gradient(
+      100deg,
+      transparent 0px,
+      transparent 10px,
+      color-mix(in oklch, var(--accent) 8%, transparent) 10px,
+      color-mix(in oklch, var(--accent) 8%, transparent) 11px
+    );
+    background-size: 200% 100%;
+    animation: mnemo-calibrating-sweep 1.6s linear infinite;
+  }
+}
+
+/* Tactile feedback on every button/toggle in the app, one rule instead of
+   touching each control's markup individually. */
+button:not(:disabled) {
+  transition:
+    transform 0.08s ease,
+    box-shadow 0.08s ease;
+}
+button:not(:disabled):active {
+  transform: scale(0.96);
+  box-shadow: 0 0 10px 1px color-mix(in oklch, var(--accent) 55%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mnemo-panel-in {
+    animation: none;
+  }
+}
+
+@keyframes mnemo-scan {
+  0% {
+    top: -6%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.5;
+  }
+  90% {
+    opacity: 0.5;
+  }
+  100% {
+    top: 106%;
+    opacity: 0;
+  }
+}
+
+@keyframes mnemo-caret {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes mnemo-flicker {
+  0%,
+  96%,
+  100% {
+    opacity: 1;
+  }
+  97% {
+    opacity: 0.82;
+  }
+  98% {
+    opacity: 1;
+  }
+  99% {
+    opacity: 0.9;
+  }
+}
+
+@keyframes mnemo-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes mnemo-calibrating-sweep {
+  from {
+    background-position: 0% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Brief intensification of the CRT frame's scan/glow, triggered by a real
+   loss spike (see crt-overlay.tsx), not a looping ambient effect. */
+@keyframes mnemo-glitch {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  20% {
+    opacity: 0.4;
+    transform: translateX(-2px);
+  }
+  40% {
+    opacity: 1;
+    transform: translateX(2px);
+  }
+  60% {
+    opacity: 0.6;
+    transform: translateX(-1px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* One-shot settle on mount: the wordmark's double-exposed shadow eases
+   into alignment instead of looping. */
+@keyframes mnemo-logo-settle {
+  0% {
+    text-shadow:
+      -3px 0 var(--accent),
+      3px 0 var(--foreground);
+    letter-spacing: 0.5em;
+    opacity: 0;
+  }
+  60% {
+    text-shadow:
+      -1px 0 var(--accent),
+      1px 0 var(--foreground);
+    opacity: 1;
+  }
+  100% {
+    text-shadow: none;
+    letter-spacing: 0.3em;
+    opacity: 1;
+  }
+}
+
+@keyframes mnemo-phase-flash {
+  0% {
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
