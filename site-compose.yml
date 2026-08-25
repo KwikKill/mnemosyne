@@ -1,0 +1,12 @@
+services:
+  mnemosyne:
+    build:
+      context: ./mnemosyne
+      dockerfile: Dockerfile
+    container_name: mnemosyne
+    image: site/mnemosyne
+    expose:
+      - "3000"
+    networks:
+      - sites
+    restart: unless-stopped
