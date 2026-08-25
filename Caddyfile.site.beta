@@ -1,0 +1,3 @@
+mnemosyne.somi.{$WEBSITE_HOST} {
+	reverse_proxy mnemosyne:3000
+}

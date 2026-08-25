@@ -1,0 +1,13 @@
+services:
+  mnemosyne:
+    build:
+      context: ./mnemosyne
+      dockerfile: Dockerfile.dev
+    container_name: mnemosyne
+    image: site/mnemosyne
+    volumes:
+      - ./mnemosyne:/src
+    expose:
+      - "3000"
+    networks:
+      - sites
